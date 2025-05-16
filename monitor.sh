@@ -16,7 +16,7 @@ print_header() {
 
 
 for pkg in lm-sensors bc; do
-    if ! command -v "$pkg" &>/dev/null; then
+    if ! dpkg -s "$pkg" &>/dev/null && ! rpm -q "$pkg" &>/dev/null && ! pacman -Qi "$pkg" &>/dev/null; then
         echo -e "${YELLOW}Installing $pkg...${RESET}"
         if command -v apt &>/dev/null; then
             sudo apt update && sudo apt install -y "$pkg"
