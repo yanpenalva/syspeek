@@ -14,7 +14,6 @@ print_header() {
     echo "$separator"
 }
 
-
 for pkg in lm-sensors bc; do
     if ! dpkg -s "$pkg" &>/dev/null && ! rpm -q "$pkg" &>/dev/null && ! pacman -Qi "$pkg" &>/dev/null; then
         echo -e "${YELLOW}Installing $pkg...${RESET}"
@@ -36,6 +35,24 @@ if [ -f /etc/os-release ]; then
     echo -e "${GREEN}${NAME} ${VERSION}${RESET}"
 else
     uname -a
+fi
+
+print_header "🔧 Kernel Version"
+echo -e "${GREEN}$(uname -r)${RESET}"
+
+print_header "🔍 Architecture"
+echo -e "${GREEN}$(uname -m)${RESET}"
+
+print_header "📅 System Date and Time"
+echo -e "${GREEN}$(date +'%Y-%m-%d %H:%M:%S')${RESET}"
+echo -e "${GREEN}$(date +'%A, %B %d, %Y %H:%M:%S')${RESET}"
+
+print_header "🕒 System Boot Time"
+if [ -f /proc/stat ]; then
+    boot_time=$(awk '/btime/ { print strftime("%Y-%m-%d %H:%M:%S", $2) }' /proc/stat)
+    echo -e "${GREEN}$boot_time${RESET}"
+else
+    echo -e "${YELLOW}Boot time information not available.${RESET}"
 fi
 
 print_header "⏱️ CPU Uptime"
